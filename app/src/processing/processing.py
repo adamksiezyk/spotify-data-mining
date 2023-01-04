@@ -53,15 +53,6 @@ def _fetch_chunks(lst: List, chunk_size: int, fn: Callable[[List], Dict]) -> Ite
     for _, chunk in enumerate(chunked_list):
         yield fn(chunk)
 
-def create_db() -> None:
-    _conn.create_ddl(Base)
-    # Create all countries
-    ids = scraper.scrape_countries()
-    ids[ids.index("global")] = "gl"
-    names = ["Global" if code == "gl" else pycountry.countries.get(alpha_2=code).name
-             for code in ids]
-    create_countries(pd.DataFrame(list(zip(ids, names)), columns=['id', 'name']))
-
 
 def create_countries(countries: pd.DataFrame) -> None:
     countries_gw.create_all(countries)
