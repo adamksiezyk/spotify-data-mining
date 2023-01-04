@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: spotify
+      POSTGRES_PASSWORD: spotify
+      POSTGRES_DB: spotify
+    networks:
+      - app-net
+  app-init:
+    build: ./app
+    command: "python3 scripts/create_db.py"
+    env_file:
+      - ./.env
+    networks:
+      - app-net
+    links:
+      - db
+
+volumes:
+  app-vol:
+    driver: local
+    driver_opts:
+      o: bind
+      type: ro
+      device: ./data
+
+networks:
+  app-net:
