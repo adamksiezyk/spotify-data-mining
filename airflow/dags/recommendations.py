@@ -12,7 +12,7 @@ with DAG(dag_id="recommendations",
     t_create_recommendations = Operator(task_id="create_recommendations",
                                         cmd=["python3", "scripts/create_recommendation.py"])
 
-    t_create_recommendations_cluster = Operator(task_id="create_recommendations",
+    t_create_recommendations_cluster = Operator(task_id="create_recommendations_cluster",
                                         cmd=["python3", "scripts/create_recommendation_cluster.py"])
 
     t_create_df_with_popularity >> [t_create_recommendations, t_create_recommendations_cluster]
