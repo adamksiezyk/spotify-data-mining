@@ -4,6 +4,7 @@ from api import tracks
 from db.gateway import TracksGateway
 
 FILE_NAME = 'features_with_popularity.pkl'
+VOL_MOUNT = "/recommendation"
 
 tracks_gw = TracksGateway()
 features = tracks_gw.fetch_all().dropna()
@@ -27,7 +28,7 @@ def append_popularity(features: pd.DataFrame):
 
 def main():
     features_with_popularity = append_popularity(features)
-    features_with_popularity.to_pickle(FILE_NAME)
+    features_with_popularity.to_pickle(f'{VOL_MOUNT}/{FILE_NAME}')
 
 
 if __name__ == "__main__":

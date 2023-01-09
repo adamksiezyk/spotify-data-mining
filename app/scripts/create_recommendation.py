@@ -28,6 +28,7 @@ CAT_COLUMN_NAMES = ['key_0', 'key_1', 'key_2', 'key_3', 'key_4', 'key_5', 'key_6
 scaler = MinMaxScaler()
 
 FILE_NAME = 'features_with_popularity.pkl'
+VOL_MOUNT = "/recommendation"
 
 
 def preprocess_features(features_df: pd.DataFrame, fit_scaler=False) -> pd.DataFrame:
@@ -101,7 +102,7 @@ def format_recommended_tracks(tracks: List):
     albums_fetched = get_albums(albums)
 
     pathlib.Path('recommendations').mkdir(exist_ok=True)
-    with open(f'./recommendations/recommendations-{time.strftime("%Y%m%d-%H%M%S")}.txt', "w") as output_file:
+    with open(f'{VOL_MOUNT}/recommendations-{time.strftime("%Y%m%d-%H%M%S")}.txt', "w") as output_file:
         output_file.write("Here are your recommendations!\n")
         for track in tracks:
             artist = ''
@@ -118,7 +119,7 @@ def main():
     user_tracks = get_user_top_tracks(token, 'medium_term')
     user_tracks_ids.extend([track['id'] for track in user_tracks])
     user_tracks_features = get_tracks_audio_features(user_tracks_ids)
-    features_with_popularity = pd.read_pickle(FILE_NAME)
+    features_with_popularity = pd.read_pickle(f'{VOL_MOUNT}/{FILE_NAME}')
     features_scaled = preprocess_features(features_with_popularity, fit_scaler=True)
     recommendations_ids = create_recommendations(features_scaled, user_tracks_features, popularity_rate)
     recommendations_tracks = get_tracks(recommendations_ids)

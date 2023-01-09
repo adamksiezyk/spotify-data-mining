@@ -30,6 +30,7 @@ scaler = MinMaxScaler()
 beta = 0.9
 
 FILE_NAME = 'features_with_popularity.pkl'
+VOL_MOUNT = "/recommendation"
 
 
 def get_similarities(cluster_vectors: pd.DataFrame, user_vector: UserVector):
@@ -84,7 +85,7 @@ def format_recommended_tracks(tracks: List):
         artists_fetched.extend(get_artists(artists_ids))
 
     pathlib.Path('recommendations').mkdir(exist_ok=True)
-    with open(f'./recommendations/recommendations-cluster-{time.strftime("%Y%m%d-%H%M%S")}.txt', "w") as output_file:
+    with open(f'{VOL_MOUNT}/recommendations-cluster-{time.strftime("%Y%m%d-%H%M%S")}.txt', "w") as output_file:
         output_file.write("Here are your recommendations!\n")
         for track in tracks:
             artist = ''
@@ -137,7 +138,7 @@ def main():
     user_tracks = get_user_top_tracks(token, 'medium_term')
     user_tracks_ids.extend([track['id'] for track in user_tracks])
     user_tracks_features = get_tracks_audio_features(user_tracks_ids)
-    features_with_popularity = pd.read_pickle(FILE_NAME)
+    features_with_popularity = pd.read_pickle(f'{VOL_MOUNT}/{FILE_NAME}')
     features_with_popularity = features_with_popularity.loc[features_with_popularity['popularity'] >= popularity_rate]
     n_clusters, clustered_features = cluster_features(features_with_popularity)
     vectors = get_clusters_vectors(clustered_features, n_clusters)

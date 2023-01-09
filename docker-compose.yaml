@@ -25,6 +25,9 @@ volumes:
       o: bind
       type: ro
       device: ./data
+  recomm-vol:
+    driver: local
+
 
 networks:
   app-net:

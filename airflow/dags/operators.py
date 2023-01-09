@@ -11,6 +11,9 @@ DOCKER_URL = "tcp://host.docker.internal:2375"
 DOCKER_IMG = "spotify-data-mining_app"
 DOCKER_NETWORK = "spotify-data-mining_app-net"
 DOCKER_VOL = "spotify-data-mining_app-vol"
+DOCKER_VOL_RECOMM = "spotify-data-mining_recomm-vol"
+
+RECOMM_MOUNT = "/recommendation"
 
 
 class OperatorType:
@@ -36,7 +39,7 @@ def _create_docker_operator(img: str, env: Optional[Dict] = None) -> OperatorTyp
                               environment=env,
                               network_mode=DOCKER_NETWORK,
                               auto_remove=True,
-                              mounts=[Mount(target=APP_MOUNT, source=DOCKER_VOL)],
+                              mounts=[Mount(target=APP_MOUNT, source=DOCKER_VOL), Mount(target=RECOMM_MOUNT, source=DOCKER_VOL_RECOMM)],
                               mount_tmp_dir=False)
 
     return inner
