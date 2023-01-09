@@ -63,9 +63,9 @@ def connection_factory(connector_type: str,
 
 load_dotenv()
 _conn = connection_factory(
-    connector_type=os.environ['DB_TYPE'],
-    address=os.environ['DB_ADDRESS'],
-    port=os.environ['DB_PORT'],
-    db_name=os.environ['DB_NAME'],
-    username=os.environ['DB_USERNAME'],
-    password=os.environ['DB_PASSWORD'])
+    connector_type=os.getenv('DB_TYPE', ''),
+    address=os.getenv('DB_ADDRESS', ''),
+    port=os.getenv('DB_PORT', ''),
+    db_name=os.getenv('DB_NAME', ''),
+    username=os.getenv('DB_USERNAME', ''),
+    password=os.getenv('DB_PASSWORD', ''))
