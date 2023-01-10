@@ -8,7 +8,7 @@ services:
       POSTGRES_DB: spotify
     networks:
       - app-net
-  app-init:
+  app:
     build: ./app
     command: "python3 scripts/create_db.py"
     env_file:

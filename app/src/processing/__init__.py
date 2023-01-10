@@ -6,5 +6,7 @@ from .processing import (
     create_tracks_and_artists,
     create_chart,
     get_tracks_with_genres,
-    get_charts
+    get_charts,
+    get_chart_tracks,
+    create_chart_statistics
 )

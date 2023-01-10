@@ -3,14 +3,11 @@ import itertools
 import logging.config
 import os
 import pandas as pd
-import pycountry
 from typing import Callable, Dict, Iterator, List, Optional, Tuple
 
 import utils
-import scraper
 from api import artists, tracks
-from db import _conn, Base
-from db.gateway import ArtistsGateway, ChartTracksGateway, ChartsGateway, CountriesGateway, TrackArtistsGateway, TracksGateway
+from db.gateway import ArtistsGateway, ChartTracksGateway, ChartsGateway, ChartsStatiscticsGateway, CountriesGateway, TrackArtistsGateway, TracksGateway
 
 
 logging.config.fileConfig(fname=os.environ['LOG_CONF'])
@@ -22,6 +19,7 @@ tracks_gw = TracksGateway()
 track_artists_gw = TrackArtistsGateway()
 charts_gw = ChartsGateway()
 chart_tracks_gw = ChartTracksGateway()
+chart_statistics_gw = ChartsStatiscticsGateway()
 
 
 def fetch_tracks(track_ids: List) -> pd.DataFrame:
@@ -106,17 +104,25 @@ def _merge_genres(s: pd.Series) -> list:
 def get_charts(country_code: Optional[str] = None,
                date_range: Optional[Tuple[str, str]] = None) -> pd.DataFrame:
     df_charts = charts_gw.fetch_all()
+    df_charts['date'] = pd.to_datetime(df_charts['date'])
     # Extract country
-    if country_code is None:
-        df_country_charts = df_charts
-    else:
-        df_country_charts = df_charts[df_charts['country_code'] == country_code]
+    if country_code is not None:
+        df_charts = df_charts[df_charts['country_code'] == country_code]
     # Extract date range
     if date_range is not None:
-        df_country_charts['date'] = pd.to_datetime(df_country_charts['date'])
-        s_date_mask = (df_country_charts['date'] > date_range[0]) & \
-                      (df_country_charts['date'] <= date_range[1])
-        df_country_charts = df_country_charts.loc[s_date_mask]
+        df_charts = df_charts.loc[
+            (df_charts['date'] >= date_range[0]) &
+            (df_charts['date'] <= date_range[1])
+        ]
+    return df_charts
 
+
+def get_chart_tracks(country_code: Optional[str] = None,
+                     date_range: Optional[Tuple[str, str]] = None) -> pd.DataFrame:
+    df_charts = get_charts(country_code, date_range)
     df_chart_tracks = chart_tracks_gw.fetch_all()
-    return df_country_charts.merge(df_chart_tracks, left_index=True, right_on='chart_id')
+    return df_charts.merge(df_chart_tracks, left_index=True, right_on='chart_id')
+
+
+def create_chart_statistics(chart_statistics: pd.DataFrame) -> None:
+    chart_statistics_gw.create_all(chart_statistics)

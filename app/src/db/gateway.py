@@ -2,7 +2,7 @@ import pandas as pd
 from abc import ABC
 
 from db import _conn, Table
-from db.tables import Country, TrackArtist, WeeklyChart, ChartTrack, Track, Artist
+from db.tables import Country, TrackArtist, WeeklyChart, ChartTrack, Track, Artist, ChartStatistics
 
 
 class IPandasGateway(ABC):
@@ -62,3 +62,8 @@ class TrackArtistsGateway(IPandasGateway):
         self._conn.upsert(self._table,
                           objects,
                           columns=['track_id', 'artist_id'])
+
+
+class ChartsStatiscticsGateway(IPandasGateway):
+    def __init__(self):
+        super().__init__(ChartStatistics)

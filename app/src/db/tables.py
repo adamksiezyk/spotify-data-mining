@@ -75,3 +75,25 @@ class Track(Base):
     tempo = sqlalchemy.Column(sqlalchemy.Float)
     duration_ms = sqlalchemy.Column(sqlalchemy.Float)
     time_signature = sqlalchemy.Column(sqlalchemy.Float)
+
+
+class ChartStatistics(Base):
+    __tablename__ = "charts_statistics"
+
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
+    chart_id = sqlalchemy.Column(sqlalchemy.Integer,
+                                 sqlalchemy.ForeignKey("weekly_charts.id"))
+    mean_danceability = sqlalchemy.Column(sqlalchemy.Float)
+    mean_energy = sqlalchemy.Column(sqlalchemy.Float)
+    mode_key = sqlalchemy.Column(sqlalchemy.Float)
+    mean_loudness = sqlalchemy.Column(sqlalchemy.Float)
+    mean_mode = sqlalchemy.Column(sqlalchemy.Float)
+    mean_speechiness = sqlalchemy.Column(sqlalchemy.Float)
+    mean_acousticness = sqlalchemy.Column(sqlalchemy.Float)
+    mean_instrumentalness = sqlalchemy.Column(sqlalchemy.Float)
+    mean_liveness = sqlalchemy.Column(sqlalchemy.Float)
+    mean_valence = sqlalchemy.Column(sqlalchemy.Float)
+    mean_tempo = sqlalchemy.Column(sqlalchemy.Float)
+    mean_duration_ms = sqlalchemy.Column(sqlalchemy.Float)
+    mode_time_signature = sqlalchemy.Column(sqlalchemy.Float)
+    mode_genre = sqlalchemy.Column(sqlalchemy.String)
